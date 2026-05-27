@@ -1,0 +1,9 @@
+{
+	"typescript.format.semicolons": "remove",
+	"pretty-formatter.braceStyle": "collapse",
+	"pretty-formatter.endComma": "never",
+	"pretty-formatter.formatObject": "indent",
+	"pretty-formatter.space": false,
+	"appService.defaultWebAppToDeploy": "/subscriptions/fbde15de-610b-420c-9caa-2bd978bcc9c7/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/RSiVisualGroundSegment",
+	"appService.deploySubpath": "build"
+}

@@ -1,0 +1,55 @@
+/*-------Inside Calculate VGS --------------------------------------------
+		//Check if units is metric or imperial. If it is imperial
+		// if(this.state.canConvert == true) {
+		// 	switch(this.state.units) {
+		// 		case 'Metric':
+		// 			//Convert from Imperial to Metric. Multiply by a factor of 0.3048
+		// 			let dhM = this.state.dh * 0.3048//dh
+		// 			let xaM = this.state.xa * 0.3048//xa
+		// 			let xeM = this.state.xe * 0.3048//xe
+		// 			let zaM = this.state.za * 0.3048//za
+		// 			let zeM = this.state.ze * 0.3048//ze
+		// 			let gsxM = this.state.gsx * 0.3048//gsx
+		// 			let gsyM = this.state.gsy * 0.3048//gsy
+		// 			let xrvrM = this.state.xrvr * 0.3048//xrvr
+		// 			let tchM = this.state.tch * 0.3048//tch
+
+		// 			this.setState({
+		// 				dh: dhM,
+		// 				xa: xaM,
+		// 				xe: xeM,
+		// 				za: zaM,
+		// 				ze: zeM,
+		// 				gsx: gsxM,
+		// 				gsy: gsyM,
+		// 				xrvr: xrvrM,
+		// 				tch: tchM,
+		// 			});
+		// 		break;
+		// 		case 'Imperial':
+		// 			//Convert from Metric to Imperial. Multiply by a factor of 3.281
+		// 			let dhI = this.state.dh * 3.281//dh
+		// 			let xaI = this.state.xa * 3.281//xa
+		// 			let xeI = this.state.xe * 3.281//xe
+		// 			let zaI = this.state.za * 3.281//za
+		// 			let zeI = this.state.ze * 3.281//ze
+		// 			let gsxI = this.state.gsx * 3.281//gsx
+		// 			let gsyI = this.state.gsy * 3.281//gsy
+		// 			let xrvrI = this.state.xrvr * 3.281//xrvr
+		// 			let tchI = this.state.tch * 3.281//tch
+		// 			this.setState({
+		// 				dh: dhI,
+		// 				xa: xaI,
+		// 				xe: xeI,
+		// 				za: zaI,
+		// 				ze: zeI,
+		// 				gsx: gsxI,
+		// 				gsy: gsyI,
+		// 				xrvr: xrvrI,
+		// 				tch: tchI,
+		// 				canConvert: true
+		// 			});
+		// 		break;
+		// 		default:
+		// 			break
+		// 	}

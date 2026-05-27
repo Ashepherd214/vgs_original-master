@@ -1,0 +1,16 @@
+*Inputs Tab Layout*
+	-	Title: "Data Inputs for (Aircraft Name)"
+	-	Row: "Runway Selected: " (ICAO Value)	"Compute Type: " (Compute style i.e. 0 offset Published TCH etc.)
+	-	Silhoutte image for aircraft type (Airplane or Helicopter)
+	-	Row: (ze Value) "ze - Pilot's eye height above the main gear at zero.
+	-	Row: (xe Value) "xe - Pilot's eye point to main gear distance.
+	-	Row: (za Value) "za - Aircraft's GS antenna height above main gear."
+	-	Row: (xa Value) "xa - Aircraft's GS antenna distance to main gear."
+	-	Row: (pitch angle Value) "pitch angle - Aircraft's pitch angle on approach."
+	-	Row: (lookdown Value) "lookdown - Aircraft's maximum look down angle."
+	-	Row with 4 columns: 
+		1.)	"Aircraft Weight" (airweight value below)
+		2.)	"Aircraft Speed" (airSpeed value below)
+		3.)	"% CG" (CG value below)
+		4.)	"Flaps" (flaps value below)
+	-	Visual of GS Antenna location (Shows Y offset and X offset values above visual)
