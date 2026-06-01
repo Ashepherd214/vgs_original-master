@@ -14,6 +14,156 @@ class ManageRunways extends StatefulWidget {
 class _ManageRunwaysState extends State<ManageRunways> {
   final FirestoreService _firestoreService = FirestoreService();
   Runway? _selectedRunway;
+  late Stream<List<Runway>> _runwaysStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _runwaysStream = _firestoreService.getRunwaysStream();
+  }
+
+  void _showRunwayModal({Runway? runway}) {
+    final isEditing = runway != null;
+    final formKey = GlobalKey<FormState>();
+
+    String id = runway?.id ?? '';
+    String icao = runway?.icao ?? '';
+    String approachLights = runway?.approachLights ?? '';
+    String dh = runway?.dh?.toString() ?? '';
+    String edgeSpacing = runway?.edgeSpacing?.toString() ?? '';
+    String gsOffsetX = runway?.gsOffsetX?.toString() ?? '';
+    String gsOffsetY = runway?.gsOffsetY?.toString() ?? '';
+    String glideSlope = runway?.glideSlope?.toString() ?? '';
+    String tch = runway?.tch?.toString() ?? '';
+    String width = runway?.width?.toString() ?? '';
+    bool units = runway?.units ?? false;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(builder: (context, setModalState) {
+          return AlertDialog(
+            title: Text(isEditing ? 'Edit Runway' : 'Add Runway'),
+            content: SingleChildScrollView(
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextFormField(
+                      initialValue: id,
+                      decoration: const InputDecoration(labelText: 'Runway Name (ID)'),
+                      readOnly: isEditing,
+                      validator: (value) => value == null || value.isEmpty ? 'Required' : null,
+                      onSaved: (value) => id = value!,
+                    ),
+                    TextFormField(
+                      initialValue: icao,
+                      decoration: const InputDecoration(labelText: 'ICAO'),
+                      onSaved: (value) => icao = value ?? '',
+                    ),
+                    TextFormField(
+                      initialValue: approachLights,
+                      decoration: const InputDecoration(labelText: 'Approach Lights'),
+                      onSaved: (value) => approachLights = value ?? '',
+                    ),
+                    TextFormField(
+                      initialValue: dh,
+                      decoration: const InputDecoration(labelText: 'DH'),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      onSaved: (value) => dh = value ?? '',
+                    ),
+                    TextFormField(
+                      initialValue: edgeSpacing,
+                      decoration: const InputDecoration(labelText: 'Edge Spacing'),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      onSaved: (value) => edgeSpacing = value ?? '',
+                    ),
+                    TextFormField(
+                      initialValue: gsOffsetX,
+                      decoration: const InputDecoration(labelText: 'GS Offset X'),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      onSaved: (value) => gsOffsetX = value ?? '',
+                    ),
+                    TextFormField(
+                      initialValue: gsOffsetY,
+                      decoration: const InputDecoration(labelText: 'GS Offset Y'),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      onSaved: (value) => gsOffsetY = value ?? '',
+                    ),
+                    TextFormField(
+                      initialValue: glideSlope,
+                      decoration: const InputDecoration(labelText: 'Glide Slope'),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      onSaved: (value) => glideSlope = value ?? '',
+                    ),
+                    TextFormField(
+                      initialValue: tch,
+                      decoration: const InputDecoration(labelText: 'TCH'),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      onSaved: (value) => tch = value ?? '',
+                    ),
+                    TextFormField(
+                      initialValue: width,
+                      decoration: const InputDecoration(labelText: 'Width'),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      onSaved: (value) => width = value ?? '',
+                    ),
+                    SwitchListTile(
+                      title: const Text('Metric Units?'),
+                      value: units,
+                      onChanged: (val) {
+                        setModalState(() {
+                          units = val;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () async {
+                  if (formKey.currentState!.validate()) {
+                    formKey.currentState!.save();
+                    final newRunway = Runway(
+                      id: id,
+                      icao: icao.isEmpty ? null : icao,
+                      approachLights: approachLights.isEmpty ? null : approachLights,
+                      dh: num.tryParse(dh),
+                      edgeSpacing: num.tryParse(edgeSpacing),
+                      gsOffsetX: num.tryParse(gsOffsetX),
+                      gsOffsetY: num.tryParse(gsOffsetY),
+                      glideSlope: num.tryParse(glideSlope),
+                      tch: num.tryParse(tch),
+                      width: num.tryParse(width),
+                      units: units,
+                    );
+                    await _firestoreService.addRunway(newRunway);
+                    if (context.mounted) {
+                      Navigator.of(context).pop();
+                      if (isEditing && _selectedRunway?.id == newRunway.id) {
+                        setState(() {
+                          _selectedRunway = newRunway;
+                          widget.onRunwaySelected(_selectedRunway);
+                        });
+                      }
+                    }
+                  }
+                },
+                child: const Text('Save'),
+              ),
+            ],
+          );
+        });
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +177,7 @@ class _ManageRunwaysState extends State<ManageRunways> {
         ),
         const SizedBox(height: 16),
         StreamBuilder<List<Runway>>(
-          stream: _firestoreService.getRunwaysStream(),
+          stream: _runwaysStream,
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
@@ -93,16 +243,12 @@ class _ManageRunwaysState extends State<ManageRunways> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
-              onPressed: () {
-                // TODO: Add Runway Modal
-              },
+              onPressed: () => _showRunwayModal(),
               child: const Text('Add Runway'),
             ),
             ElevatedButton(
               onPressed: _selectedRunway != null
-                  ? () {
-                      // TODO: Edit Runway Modal
-                    }
+                  ? () => _showRunwayModal(runway: _selectedRunway)
                   : null,
               child: const Text('Edit Runway'),
             ),
