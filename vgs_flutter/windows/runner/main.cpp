@@ -5,6 +5,24 @@
 #include "flutter_window.h"
 #include "utils.h"
 
+// Stubs for missing MSVC linker symbols (often encountered with Firebase plugins on Windows)
+#if defined(_MSC_VER) && defined(_M_X64)
+extern "C" {
+  int _Avx2WmemEnabled = 0;
+
+  unsigned __int64 __std_find_first_of_trivial_pos_1(const char* First1, unsigned __int64 Count1, const char* First2, unsigned __int64 Count2) {
+    for (unsigned __int64 i = 0; i < Count1; ++i) {
+      for (unsigned __int64 j = 0; j < Count2; ++j) {
+        if (First1[i] == First2[j]) {
+          return i;
+        }
+      }
+    }
+    return static_cast<unsigned __int64>(-1);
+  }
+}
+#endif
+
 int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
                       _In_ wchar_t *command_line, _In_ int show_command) {
   // Attach to console when present (e.g., 'flutter run') or create a
